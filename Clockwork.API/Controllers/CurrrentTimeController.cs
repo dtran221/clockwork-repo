@@ -1,11 +1,12 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Clockwork.API.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace Clockwork.API.Controllers
 {
     [Route("api/[controller]")]
-    public class CurrentTimeController : Controller
+    public class CurrentTimeController : ControllerBase
     {
         // GET api/currenttime
         [HttpGet]

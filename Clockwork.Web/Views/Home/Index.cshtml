@@ -6,8 +6,10 @@ function UserAction() {
             document.getElementById("output").innerHTML = this.responseText;
         }
     };
-    xhttp.open("GET", "http://127.0.0.1:5000/api/currenttime", true);
-    xhttp.setRequestHeader("Content-type", "application/json");
+    xhttp.open("GET", "http://localhost:49180/api/currenttime", true);
+    xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+    xhttp.setRequestHeader('Content-type', 'application/json');
+    xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
     xhttp.send();
 
 }
