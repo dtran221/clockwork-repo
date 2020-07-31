@@ -1,17 +1,21 @@
 ﻿<script>
-function UserAction() {
+    function UserAction() {
+    
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            document.getElementById("output").innerHTML = this.responseText;
+            let outPutObj = JSON.parse(this.responseText);
+            let x = 5;
+            document.getElementById("output").innerText = `ClientIp: ${outPutObj.clientIp} \n Current Time QueryId: ${outPutObj.currentTimeQueryId} \n Time: ${outPutObj.time} \n UtcTime: ${outPutObj.utcTime}`;
         }
     };
     xhttp.open("GET", "http://localhost:49180/api/currenttime", true);
     xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
     xhttp.setRequestHeader('Content-type', 'application/json');
     xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
-    xhttp.send();
+        xhttp.send();
 
+        
 }
 </script>
 
