@@ -1,27 +1,66 @@
 ﻿<script>
-    function UserAction() {
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-            let outPutObj = JSON.parse(this.responseText);
-            let x = 5;
-            document.getElementById("output").innerText = `ClientIp: ${outPutObj.clientIp} \n Current Time QueryId: ${outPutObj.currentTimeQueryId} \n Time: ${outPutObj.time} \n UtcTime: ${outPutObj.utcTime}`;
-        }
-    };
-    xhttp.open("GET", "http://localhost:49180/api/currenttime", true);
-    xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
-    xhttp.setRequestHeader('Content-type', 'application/json');
-    xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
+    function getTime() {
+        let options = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', dateStyle: 'short', timeStyle: 'short', timeZoneName: 'short', hour12: 'true' };
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let outPutObj = JSON.parse(this.responseText);
+                document.getElementById("timeSpot").innerText = `${Date(outPutObj.utcTime).toLocaleTimeString(navigator.language)}`;
+                document.getElementById("details").innerText = `ClientIp: ${outPutObj.clientIp} \n Current Time QueryId: ${outPutObj.currentTimeQueryId}`;
+                document.getElementById("singleTimeCard").style.display = "block";
+                document.getElementById("multipleTimeCard").style.display = "none";
+            }
+        };
+        xhttp.open("GET", "http://localhost:49180/api/currenttime", true);
+        xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+        xhttp.setRequestHeader('Content-type', 'application/json');
+        xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
         xhttp.send();
 
-        
-}
+
+    }
+    function getAllDatabases() {
+        var xhttp = new XMLHttpRequest()
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let options = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', dateStyle: 'short', timeStyle: 'short', timeZoneName: 'short', hour12: 'true' };
+                let outPutObj = JSON.parse(this.responseText);
+                let elementToClone = document.getElementById("singleCard");
+                var containingElement = document.getElementById("multipleTimeCard");
+                let cln = elementToClone.cloneNode(true);
+                for (card of outPutObj) {
+                    cln.firstChild.nextSibling.innerText = `${Date(card.utcTime).toLocaleTimeString(navigator.language)}`;
+                    cln.lastChild.previousSibling.innerText = `ClientIp: ${card.clientIp} \n Current Time QueryId: ${card.currentTimeQueryId}`;
+                    containingElement.insertAdjacentElement("beforeend", cln);
+                    cln = elementToClone.cloneNode(true);
+                }
+                document.getElementById("singleTimeCard").style.display = "none";
+                document.getElementById("multipleTimeCard").style.display = "flex";
+            }
+        };
+        xhttp.open("GET", "http://localhost:49180/api/currenttime/all", true);
+        xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
+        xhttp.setRequestHeader('Content-type', 'application/json');
+        xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
+        xhttp.send();
+    }
+
 </script>
+<header>
+    <h2>AWH Clockwork Project @ViewData["Version"] on @ViewData["Runtime"]!</h2>
+</header>
+<section>
+    <button type="submit" onclick="getTime()">Get the time</button>
+    <button type="submit" onclick="getAllDatabases()">Get all entries</button>
+</section>
+<article id="singleTimeCard">
+    <div class="card" id="singleCard">
+        <div id="timeSpot"></div>
+        <div id="details"></div>
+    </div>
+</article>
+<article id="multipleTimeCard" class="card">
+</article>
 
-<h2>AWH Clockwork Project @ViewData["Version"] on @ViewData["Runtime"]!</h2>
 
 
-<button type="submit" onclick="UserAction()">Get the time</button>
-
-<p id="output"></p>

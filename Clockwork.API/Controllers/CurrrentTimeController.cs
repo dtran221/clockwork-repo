@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Clockwork.API.Models;
 using Microsoft.AspNetCore.Cors;
+using System.Linq;
 
 namespace Clockwork.API.Controllers
 {
@@ -38,5 +39,20 @@ namespace Clockwork.API.Controllers
 
             return Ok(returnVal);
         }
+
+
+        // GET api/currenttime
+        [HttpGet("all")]
+        public IActionResult GetAll()
+        {
+            using (var db = new ClockworkContext())
+            {
+                var allEntries = db.CurrentTimeQueries.ToList();
+                return Ok(allEntries);
+            }
+
+            
+        }
     }
+
 }
