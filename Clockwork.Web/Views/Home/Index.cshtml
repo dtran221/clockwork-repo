@@ -5,8 +5,8 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 let outPutObj = JSON.parse(this.responseText);
-                let cardDate = new Date(outPutObj.utcTime);
-                document.getElementById("timeSpot").innerText = `${cardDate.toLocaleString(navigator.language, options)}`;
+                let cardDate = moment.utc(outPutObj.utcTime).tz(document.getElementById("timeZoneSelector").value);
+                document.getElementById("timeSpot").innerText = `${cardDate.format("dddd, MMMM Do YYYY, h:mm a z")}`;
                 document.getElementById("details").innerText = `ClientIp: ${outPutObj.clientIp} \n Current Time QueryId: ${outPutObj.currentTimeQueryId}`;
                 document.getElementById("singleTimeCard").style.display = "block";
                 document.getElementById("multipleTimeCard").style.display = "none";
@@ -28,14 +28,14 @@
         var xhttp = new XMLHttpRequest()
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                let options = { weekday: 'short', year: 'numeric', month: 'short', day: '2-digit', dateStyle: 'short', timeStyle: 'short', timeZoneName: 'short', hour12: 'true' };
+                document.getElementById("multipleTimeCard").innerHTML = '';
                 let outPutObj = JSON.parse(this.responseText);
                 let elementToClone = document.getElementById("singleCard");
                 var containingElement = document.getElementById("multipleTimeCard");
                 let cln = elementToClone.cloneNode(true);
                 for (card of outPutObj) {
-                    let cardDate = new Date(card.utcTime);
-                    cln.firstChild.nextSibling.innerText = `${cardDate.toLocaleString(navigator.language, options)}`;
+                    let cardDate = moment.utc(card.utcTime).tz(document.getElementById("timeZoneSelector").value);
+                    cln.firstChild.nextSibling.innerText = `${cardDate.format("dddd, MMMM Do YYYY, h:mm a z")}`;
                     cln.lastChild.previousSibling.innerText = `ClientIp: ${card.clientIp} \n Current Time QueryId: ${card.currentTimeQueryId}`;
                     containingElement.insertAdjacentElement("beforeend", cln);
                     cln = elementToClone.cloneNode(true);
@@ -76,6 +76,7 @@
     <button type="submit" onclick="getTime()">Get the time</button>
     <button type="submit" onclick="getAllDatabases()">Get all entries</button>
     <select id="timeZoneSelector"></select>
+    
 </section>
 <article id="singleTimeCard">
     <div class="card" id="singleCard">

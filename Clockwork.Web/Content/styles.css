@@ -1,8 +1,10 @@
 ﻿body {
     display: grid;
     grid-template-areas:    "header"
-                            "buttons"
+                            "buttons" 
                             "databaseEntries";
+    background-color: #222831;
+    color: #393e46;
 }
 
 header {
@@ -10,10 +12,8 @@ header {
     display: flex;
     justify-content: center;
     margin-bottom: 5px;
-}
-
-button{
-    margin: 5px;
+    color: #eeeeee;
+    font-size: 100%;
 }
 
 section {
@@ -21,24 +21,27 @@ section {
     display: flex;
     justify-content: center;
     margin-bottom: 10px;
+    flex-wrap: wrap;
 }
 
 article {
     grid-area: databaseEntries;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 .card {
     display: inline-block;
-    border: solid;
+    border: solid #eeeeee;
     text-align: center;
-    box-shadow: 12px 12px 2px 1px rgba(0, 0, 255, .2);
+    box-shadow: 12px 12px 2px 1px #393e46;
     border-radius: 10px;
     margin: 10px;
+    background-color: #00adb5;
 }
 
 #timeSpot {
     border-bottom-style: solid;
+    border-bottom-color:#eeeeee;
     padding: 5px;
 }
 
@@ -54,4 +57,49 @@ article {
 #multipleTimeCard{
     display: none;
     flex-wrap: wrap;
+}
+
+select {
+    font-size: 100%;
+    margin: 5px;
+}
+
+button {
+    font-size: 100%;
+    margin: 5px;
+}
+
+#timeSpot{
+    font-weight: bolder;
+}
+
+@media only screen and (min-width: 768px) {
+    header {
+        font-size: 150%;
+    }
+    button {
+        font-size: 130%;
+    }
+    select {
+        font-size: 130%;
+    }
+    .card {
+        font-size: 120%;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    header {
+        font-size: 170%;
+    }
+    button {
+        font-size: 150%;
+    }
+    select {
+        font-size: 150%;
+    }
+    .card {
+
+        font-size: 140%;
+    }
 }
