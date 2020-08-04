@@ -5,17 +5,22 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 let outPutObj = JSON.parse(this.responseText);
-                document.getElementById("timeSpot").innerText = `${Date(outPutObj.utcTime).toLocaleTimeString(navigator.language)}`;
+                let cardDate = new Date(outPutObj.utcTime);
+                document.getElementById("timeSpot").innerText = `${cardDate.toLocaleString(navigator.language, options)}`;
                 document.getElementById("details").innerText = `ClientIp: ${outPutObj.clientIp} \n Current Time QueryId: ${outPutObj.currentTimeQueryId}`;
                 document.getElementById("singleTimeCard").style.display = "block";
                 document.getElementById("multipleTimeCard").style.display = "none";
             }
         };
-        xhttp.open("GET", "http://localhost:49180/api/currenttime", true);
+        xhttp.open("POST", "http://localhost:49180/api/currenttime", true);
         xhttp.setRequestHeader('Access-Control-Allow-Origin', '*');
         xhttp.setRequestHeader('Content-type', 'application/json');
-        xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
-        xhttp.send();
+        xhttp.setRequestHeader('Access-Control-Allow-Methods', '*');
+        let clientTimeZone = document.getElementById("timeZoneSelector").value;
+        let timeZoneObj = JSON.stringify({
+            TimeZone: clientTimeZone
+        });
+        xhttp.send(timeZoneObj);
 
 
     }
@@ -29,7 +34,8 @@
                 var containingElement = document.getElementById("multipleTimeCard");
                 let cln = elementToClone.cloneNode(true);
                 for (card of outPutObj) {
-                    cln.firstChild.nextSibling.innerText = `${Date(card.utcTime).toLocaleTimeString(navigator.language)}`;
+                    let cardDate = new Date(card.utcTime);
+                    cln.firstChild.nextSibling.innerText = `${cardDate.toLocaleString(navigator.language, options)}`;
                     cln.lastChild.previousSibling.innerText = `ClientIp: ${card.clientIp} \n Current Time QueryId: ${card.currentTimeQueryId}`;
                     containingElement.insertAdjacentElement("beforeend", cln);
                     cln = elementToClone.cloneNode(true);
@@ -44,14 +50,32 @@
         xhttp.setRequestHeader('Access-Control-Allow-Methods', 'GET');
         xhttp.send();
     }
+    function timeZoneSetup() {
+        let timeZoneList = moment.tz.names();
+        let timeZoneSelect = document.getElementById("timeZoneSelector");
+        let userTimeZone = moment.tz.guess(Boolean);
+        for (let zone of timeZoneList) {
+            let selectOption = document.createElement('option');
+            selectOption.textContent = zone;
+            selectOption.value = zone;
+            timeZoneSelect.appendChild(selectOption);
+        }
+        timeZoneSelect.selectedIndex = timeZoneList.indexOf(userTimeZone);
+    }
 
+    document.addEventListener('DOMContentLoaded', (event) => {
+        timeZoneSetup();
+    });
 </script>
+<script src="~/Content/Moment.js"></script>
+<script src="~/Content/MomentTimezone.js"></script>
 <header>
     <h2>AWH Clockwork Project @ViewData["Version"] on @ViewData["Runtime"]!</h2>
 </header>
 <section>
     <button type="submit" onclick="getTime()">Get the time</button>
     <button type="submit" onclick="getAllDatabases()">Get all entries</button>
+    <select id="timeZoneSelector"></select>
 </section>
 <article id="singleTimeCard">
     <div class="card" id="singleCard">
@@ -59,7 +83,7 @@
         <div id="details"></div>
     </div>
 </article>
-<article id="multipleTimeCard" class="card">
+<article id="multipleTimeCard">
 </article>
 
 

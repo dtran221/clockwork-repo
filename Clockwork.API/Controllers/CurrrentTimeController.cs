@@ -10,8 +10,8 @@ namespace Clockwork.API.Controllers
     public class CurrentTimeController : ControllerBase
     {
         // GET api/currenttime
-        [HttpGet]
-        public IActionResult Get()
+        [HttpPost]
+        public IActionResult Post([FromBody] ClientTimeZoneInfo inputTimeZone)
         {
             var utcTime = DateTime.UtcNow;
             var serverTime = DateTime.Now;
@@ -21,7 +21,8 @@ namespace Clockwork.API.Controllers
             {
                 UTCTime = utcTime,
                 ClientIp = ip,
-                Time = serverTime
+                Time = serverTime,
+                TimeZone = inputTimeZone.TimeZone
             };
 
             using (var db = new ClockworkContext())
